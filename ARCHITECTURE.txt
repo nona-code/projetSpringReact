@@ -1,0 +1,113 @@
+ARCHITECTURE MICRO-SERVICES DU PROJET
+
+1. Présentation Générale
+------------------------
+Ce projet est une architecture microservices complète pour la gestion d'une entreprise, réalisée avec Spring Boot (backend Java), React (frontend), Eureka (découverte de services), Spring Cloud Config (configuration centralisée), Spring Cloud Gateway (API Gateway) et MySQL (stockage).
+
+2. Schéma d’architecture
+------------------------
++-------------------+         +-------------------+         +-------------------+
+|                   |         |                   |         |                   |
+|   FRONTEND (React)| <-----> |   API GATEWAY     | <-----> |   EUREKA SERVER   |
+|   (localhost:3000)|  HTTP   | (localhost:8080)  |  HTTP   |  (localhost:8761) |
+|                   |         |                   |         |                   |
++-------------------+         +-------------------+         +-------------------+
+                                      |
+                                      | (routage dynamique, découverte)
+                                      v
+    +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+
+    |                   |   |                   |   |                   |   |                   |   |                   |   |                   |
+    | EMPLOYEE SERVICE  |   | DEPARTMENT SERVICE|   |  PROJECT SERVICE  |   |   ROLE SERVICE    |   |   SKILL SERVICE   |   |   OFFICE SERVICE  |
+    | (localhost:8081)  |   | (localhost:8082)  |   |  (localhost:8083) |   |  (localhost:8084) |   |  (localhost:8085) |   |  (localhost:8086) |
+    |                   |   |                   |   |                   |   |                   |   |                   |   |                   |
+    +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+
+           |                        |                        |                       |                       |                       |
+           +------------------------+------------------------+-----------------------+-----------------------+-----------------------+
+                                    |
+                                    v
+                        +---------------------------+
+                        |        MySQL DB           |
+                        | (1 base par microservice) |
+                        +---------------------------+
+                                    ^
+                                    |
+                        +---------------------------+
+                        |    CONFIG SERVER          |
+                        |   (localhost:8888)        |
+                        +---------------------------+
+                                    ^
+                                    |
+    +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+
+    | EMPLOYEE SERVICE  |   | DEPARTMENT SERVICE|   |  PROJECT SERVICE  |   |   ROLE SERVICE    |   |   SKILL SERVICE   |   |   OFFICE SERVICE  |
+    |  (Config Client)  |   |  (Config Client)  |   |  (Config Client)  |   |  (Config Client)  |   |  (Config Client)  |   |  (Config Client)  |
+    +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+   +-------------------+
+
+3. Composants et Rôles
+----------------------
+- **Frontend (React)** : Interface utilisateur, communique uniquement avec l’API Gateway.
+- **API Gateway (Spring Cloud Gateway)** : Point d’entrée unique, route les requêtes vers les bons microservices grâce à Eureka.
+- **Eureka Server** : Découverte de services, chaque microservice s’enregistre et découvre les autres via Eureka.
+- **Config Server** : Centralise la configuration de tous les microservices (fichiers YAML dans `config-repo`).
+- **Microservices** :
+    - **employee-service** : Gestion des employés
+    - **department-service** : Gestion des départements
+    - **project-service** : Gestion des projets
+    - **role-service** : Gestion des rôles
+    - **skill-service** : Gestion des compétences
+    - **office-service** : Gestion des bureaux
+- **MySQL** : Chaque microservice a sa propre base de données.
+
+4. Fonctionnalités principales
+------------------------------
+- **CRUD complet** pour chaque ressource (employé, département, projet, rôle, compétence, bureau) via REST.
+- **Découverte dynamique** des services via Eureka.
+- **Configuration centralisée** via Spring Cloud Config (chaque microservice charge sa config depuis le Config Server).
+- **Routage dynamique** via l’API Gateway.
+- **Frontend React** avec tableau de bord, histogramme Bootstrap, navigation et gestion CRUD pour chaque ressource.
+
+5. Bonnes pratiques et points techniques
+----------------------------------------
+- **Un seul fichier application.yml par microservice**, avec toutes les propriétés sous la clé `spring:`.
+- **Propriété spring.config.import** définie dans `application.yml` (ou `bootstrap.yml` si Spring Cloud Starter Bootstrap est utilisé).
+- **Pas de duplication de la clé spring:** dans les fichiers YAML.
+- **Suppression des dossiers target** avant commit pour éviter les fichiers inutiles dans le dépôt git.
+- **Connexion à GitHub** et publication du code via git (`git init`, `git add .`, `git commit`, `git remote add origin`, `git push`).
+
+6. Déploiement et utilisation
+-----------------------------
+- Lancer le Config Server (`mvn spring-boot:run` dans `config-server`).
+- Lancer Eureka (`discovery-service`).
+- Lancer l’API Gateway.
+- Lancer chaque microservice.
+- Lancer le frontend React (`npm start` dans `frontend`).
+- Accéder à l’interface sur [http://localhost:3000](http://localhost:3000).
+
+7. Résolution des problèmes courants
+------------------------------------
+- **Erreur "No spring.config.import property has been defined"** : Vérifier que la propriété est bien dans `application.yml` ou `bootstrap.yml` et que le fichier est bien placé.
+- **Erreur de datasource** : Vérifier la section `spring.datasource` dans la configuration et la présence de la dépendance MySQL.
+- **Erreur d’espace disque** : Supprimer les dossiers `target` et libérer de l’espace.
+- **Erreur 500 sur le Config Server** : Vérifier que le fichier de configuration du microservice existe dans `config-repo` et est bien formé.
+
+8. Publication sur GitHub
+-------------------------
+- Créer un dépôt sur GitHub.
+- Initialiser git dans le dossier projet.
+- Ajouter, committer et pousser le code sur le dépôt distant.
+
+9. Points forts de l’architecture
+---------------------------------
+- **Scalabilité** : chaque microservice est indépendant, peut être déployé ou mis à l’échelle séparément.
+- **Maintenance facilitée** : configuration centralisée, code découpé par domaine métier.
+- **Sécurité et cohérence** : chaque service a sa propre base, la configuration est centralisée et versionnée.
+- **Expérience utilisateur moderne** : frontend React, navigation fluide, tableau de bord visuel.
+
+10. Pour aller plus loin
+------------------------
+- Ajouter des tests automatisés (backend et frontend).
+- Mettre en place CI/CD (GitHub Actions, Jenkins, etc.).
+- Sécuriser les endpoints (Spring Security, OAuth2).
+- Ajouter la gestion des profils (dev, prod) dans la configuration centralisée.
+- Superviser les services (Spring Boot Actuator, Prometheus, Grafana).
+
+--- FIN DU RAPPORT ---

@@ -1,0 +1,7 @@
+com\example\departmentservice\controller\DepartmentController.class
+com\example\departmentservice\DepartmentServiceApplication.class
+com\example\departmentservice\repository\DepartmentRepository.class
+com\example\departmentservice\controller\HomeController.class
+com\example\departmentservice\client\EmployeeClient.class
+com\example\departmentservice\controller\DepartmentController$1.class
+com\example\departmentservice\entity\Department.class
