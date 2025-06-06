@@ -1,0 +1,350 @@
+
+
+
+
+
+
+
+
+
+
+
+Niveau : Master 1
+Rédigé et présenté par :
+MATRICULES	NOMS ET PRENOMS
+CM-UDS-22SCI1176	NGO KANDA SABINE FRANCINE ALEXANDRIE
+CM-UDS-24SCI0623	YUMKAM SIMO Elvira Audrey
+CM-UDS-21SCI0195	NONA FOGHAP CONSTANTIN
+	SEUMO DOMOU Dylan Nelson 
+
+                   Sous la coordination de : Pr. 
+
+
+
+
+
+
+
+
+
+
+1	Introduction :	5
+2	Présentation générale de l’architecture	7
+3	Schéma d’architecture et flux des données	8
+3.1	Voici un schéma simplifié de l’architecture :	8
+3.2	Flux général	8
+L’utilisateur interagit avec le frontend React via le navigateur.	8
+Le frontend envoie ses requêtes HTTP à l’API Gateway.	8
+L’API Gateway, grâce à Eureka, découvre quel microservice est concerné et route la requête.	8
+Le microservice traité exécute la logique métier, interagit avec sa base de données MySQL.	8
+Les microservices récupèrent leur configuration depuis le Config Server au démarrage.	8
+La réponse remonte à l’utilisateur via l’API Gateway.	8
+4	Description des composants clés	8
+4.1	Frontend React	8
+4.2	API Gateway (Spring Cloud Gateway)	9
+4.3	Eureka Server	9
+4.4	Config Server	9
+4.5	Microservices	9
+4.6	Bases de données	9
+5	Fonctionnalités principales	10
+5.1	Opérations CRUD complètes	10
+5.2	Découverte dynamique des services	10
+5.3	Configuration centralisée	10
+5.4	Routage dynamique via API Gateway	11
+5.5	Frontend React	11
+6	Bonnes pratiques et aspects techniques	11
+7	Déploiement et utilisation	12
+Ordre de démarrage recommandé :	12
+Accès	12
+Résolution des problèmes courants	12
+7.1	Erreur « No spring.config.import property has been defined »	12
+7.2	Problèmes de datasource	13
+7.3	Espace disque insuffisant	13
+7.4	Erreur 500 sur le Config Server	13
+8	Publication sur GitHub	14
+Étapes	14
+9	Points forts de l’architecture	14
+10	Pour aller plus loin	14
+Extrait de configuration exemple (API Gateway) :	15
+Exemple simple d’un contrôleur REST (Employee Service) :	15
+11	Autres détails : Quelques captures d’écran pour éclairer l’aspect pratique.	16
+11.1	Bref présentation de la partie visuelle :	16
+12	Conclusion :	18
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1	Introduction :
+
+Dans un environnement technologique en constante évolution, les entreprises sont confrontées à des besoins croissants en termes d’agilité, de scalabilité et de rapidité de développement. Pour répondre à ces défis, l’architecture microservices s’impose aujourd’hui comme une solution de choix, permettant de concevoir des applications modulaires, indépendantes et faciles à maintenir. Contrairement aux architectures monolithiques traditionnelles, qui regroupent toutes les fonctionnalités dans une seule application, l’architecture microservices divise l’application en plusieurs services autonomes, chacun responsable d’une fonctionnalité métier spécifique.
+Ce rapport présente la conception et la mise en œuvre d’une architecture microservices dédiée à la gestion d’entreprise. Cette solution combine plusieurs technologies robustes et éprouvées : Spring Boot pour le développement backend en Java, React pour la création d’interfaces utilisateurs modernes, ainsi que Spring Cloud, incluant Eureka pour la découverte des services, Spring Cloud Config pour la configuration centralisée, et Spring Cloud Gateway pour la gestion du routage des requêtes.
+L’objectif principal de ce projet est de proposer une plateforme complète capable de gérer efficacement les différents aspects d’une entreprise tels que les employés, les départements, les projets, les rôles, les compétences et les bureaux. Cette architecture vise à offrir une expérience utilisateur fluide et intuitive grâce à une interface web moderne, tout en garantissant une forte modularité, une haute disponibilité, et une facilité de maintenance et d’évolution.
+Ce document détaille l’ensemble des composants de l’architecture, leurs interactions, les fonctionnalités principales, les bonnes pratiques adoptées, ainsi que les perspectives d’évolution pour renforcer encore davantage la robustesse et la qualité de la solution.
+
+
+
+
+
+ 
+2	 Présentation générale de l’architecture
+L’architecture microservices consiste à décomposer une application en plusieurs services indépendants, qui communiquent entre eux via des API. Chaque service correspond à un domaine métier spécifique et possède sa propre base de données, assurant ainsi l’isolation des données et facilitant la scalabilité.
+Dans ce projet, les microservices sont développés avec Spring Boot, un framework Java réputé pour sa simplicité et sa robustesse. Le frontend est développé avec React, une bibliothèque JavaScript moderne permettant de construire des interfaces utilisateurs réactives.
+Pour gérer la découverte des services et le routage des requêtes, on utilise Spring Cloud Eureka et Spring Cloud Gateway. La configuration est centralisée via Spring Cloud Config, permettant une gestion cohérente et évolutive des paramètres.
+Chaque microservice expose des API REST complètes, permettant des opérations CRUD (Create, Read, Update, Delete) sur ses entités métiers.
+3	 Schéma d’architecture et flux des données
+3.1	Voici un schéma simplifié de l’architecture :
+ 
+3.2	Flux général 
+             L’utilisateur interagit avec le frontend React via le navigateur.
+Le frontend envoie ses requêtes HTTP à l’API Gateway.
+L’API Gateway, grâce à Eureka, découvre quel microservice est concerné et route la requête.
+Le microservice traité exécute la logique métier, interagit avec sa base de données MySQL.
+Les microservices récupèrent leur configuration depuis le Config Server au démarrage.
+La réponse remonte à l’utilisateur via l’API Gateway.
+4	 Description des composants clés
+4.1	 Frontend React
+•	Interface utilisateur construite avec React.
+•	Communication uniquement avec l’API Gateway.
+•	Fonctionnalités : tableau de bord, formulaires CRUD, navigation fluide.
+•	Utilisation de Bootstrap pour le design et les composants graphiques.
+4.2	API Gateway (Spring Cloud Gateway)
+•	Point d’entrée unique.
+•	Routage dynamique des requêtes.
+•	Intégration avec Eureka pour la découverte des microservices.
+•	Possibilité d’ajouter des filtres pour la sécurité, le logging, etc.
+4.3	Eureka Server
+•	Registre de services.
+•	Permet aux microservices de s’enregistrer automatiquement.
+•	Facilite la découverte dynamique par l’API Gateway.
+4.4	 Config Server
+•	Centralise la configuration des microservices.
+•	Stocke les fichiers YAML dans un dépôt Git (config-repo).
+•	Permet la gestion des profils (dev, prod).
+•	Chaque microservice est client du Config Server.
+4.5	 Microservices
+Chaque microservice est autonome et responsable d’un domaine :
+•	Employee Service : gestion des employés.
+•	Department Service : gestion des départements.
+•	Project Service : gestion des projets.
+•	Role Service : gestion des rôles.
+•	Skill Service : gestion des compétences.
+•	Office Service : gestion des bureaux.
+Chaque microservice expose une API REST complète pour gérer les entités, avec des opérations CRUD.
+4.6	 Bases de données
+•	Chaque microservice possède sa propre base MySQL.
+•	Assure l’isolation des données et évite les dépendances fortes.
+•	Facilite la scalabilité et la maintenance.
+
+
+5	 Fonctionnalités principales
+5.1	 Opérations CRUD complètes
+Chaque microservice propose une API REST permettant de réaliser les opérations suivantes sur ses entités :
+•	Create : création d’une nouvelle ressource (ex : un employé).
+•	Read : récupération des données (liste ou détail).
+•	Update : mise à jour des informations existantes.
+•	Delete : suppression d’une ressource.
+Ces API suivent les bonnes pratiques REST, avec des endpoints clairs, par exemple :
+GET /employees        // Liste tous les employés
+POST /employees       // Crée un nouvel employé
+GET /employees/{id}   // Détaille un employé
+PUT /employees/{id}   // Met à jour un employé
+DELETE /employees/{id}// Supprime un employé
+
+5.2	 Découverte dynamique des services
+Grâce à Eureka, chaque microservice s’enregistre automatiquement au démarrage. Cela permet à l’API Gateway de connaître les instances disponibles en temps réel, assurant :
+•	La tolérance aux pannes (redirection vers d’autres instances si une tombe).
+•	La scalabilité dynamique (ajout/suppression d’instances sans reconfiguration manuelle).
+
+5.3	 Configuration centralisée
+Avec Spring Cloud Config, toutes les configurations des microservices sont centralisées dans un dépôt Git (config-repo).
+Avantages :
+•	Modification facile et centralisée des paramètres.
+•	Gestion de profils (dev, prod) simplifiée.
+•	Mise à jour sans redéploiement (dans certains cas).
+Exemple d’un fichier application.yml dans config-repo pour employee-service :
+spring:
+datasource:
+url: jdbc:mysql://localhost:3306/employee_db
+username: user
+password: pass
+jpa:
+hibernate:
+ddl-auto: update
+
+5.4	 Routage dynamique via API Gateway
+Le Gateway reçoit les requêtes et les achemine vers le bon microservice, selon des règles configurées.
+Exemple de configuration simple :
+spring:
+cloud:
+gateway:
+routes:
+- id: employee-service
+uri: lb://EMPLOYEE-SERVICE
+predicates:
+- Path=/employees/**
+lb:// indique l’utilisation du load balancer intégré avec Eureka.
+5.5	 Frontend React
+•	Navigation intuitive entre les différentes entités.
+•	Tableaux et formulaires pour gérer les ressources.
+•	Utilisation de Bootstrap pour le style.
+•	Affichage graphique (histogrammes, tableaux de bord).
+
+6	Bonnes pratiques et aspects techniques
+•	Fichiers YAML uniques par microservice avec propriété spring.config.import correctement configurée.
+•	Suppression des dossiers target avant chaque commit Git pour éviter de versionner des fichiers temporaires.
+•	Utilisation de GitHub pour le versioning, avec commandes classiques git init, git add, git commit, git push.
+•	Gestion des erreurs courantes : erreurs liées à la datasource, configuration absente, manque d’espace disque.
+•	Structuration claire du code source, découpage fonctionnel par domaine métier.
+
+7	 Déploiement et utilisation
+Ordre de démarrage recommandé :
+1.	Config Server : démarrage avec mvn spring-boot:run dans config-server.
+2.	Eureka Server : serveur de découverte.
+3.	API Gateway : point d’entrée.
+4.	Microservices : lancer chacun des 6 services.
+5.	Frontend React : lancer avec npm start.
+Accès
+L’application est accessible via le navigateur à l’adresse :
+http://localhost:3000
+
+
+ Résolution des problèmes courants
+7.1	 Erreur « No spring.config.import property has been defined »
+Cette erreur survient souvent quand la propriété spring.config.import n’est pas déclarée dans les fichiers application.yml ou bootstrap.yml. Cela empêche le microservice de charger sa configuration depuis le Config Server.
+Exemple correct dans application.yml :
+spring:
+config:
+import: "optional:configserver:http://localhost:8888"
+Vérifier aussi que le fichier YAML est bien placé à la racine src/main/resources.
+7.2	 Problèmes de datasource
+Souvent liés à une mauvaise configuration de la base de données ou à l’absence de la dépendance MySQL.
+Vérifier :
+•	La section spring.datasource dans la config (URL, utilisateur, mot de passe).
+•	La dépendance Maven dans le pom.xml :
+<dependency>
+<groupId>mysql</groupId>
+<artifactId>mysql-connector-java</artifactId>
+<scope>runtime</scope>
+</dependency>
+
+7.3	 Espace disque insuffisant
+Des erreurs peuvent apparaître si les dossiers target ne sont pas nettoyés régulièrement.
+Solution :
+•	Supprimer les dossiers target dans chaque microservice avant un nouveau build ou commit.
+•	Vérifier l’espace disque disponible.
+7.4	Erreur 500 sur le Config Server
+Cela arrive si un fichier de configuration est manquant ou mal formé dans le dépôt Git config-repo.
+Conseils :
+•	Vérifier que le fichier employee-service.yml (ou autre) existe bien dans config-repo.
+•	S’assurer que la syntaxe YAML est correcte.
+8	 Publication sur GitHub
+Étapes
+1.	Créer un dépôt sur GitHub.
+2.	Initialiser le dépôt localement :
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/username/projet-microservices.git
+git push -u origin master
+3.	Organiser le dépôt avec des branches si besoin (feature, develop, etc.).
+9	 Points forts de l’architecture
+•	Scalabilité : chaque microservice est indépendant, il est possible de le déployer et de le faire évoluer séparément.
+•	Maintenance facilitée : découpage clair par domaine métier et configuration centralisée.
+•	Résilience et tolérance aux pannes grâce à Eureka et au load balancing automatique.
+•	Sécurité renforcée possible par le découpage des services et futures extensions (OAuth2, JWT).
+•	Expérience utilisateur moderne : React permet un frontend dynamique et agréable.
+10	 Pour aller plus loin
+•	Tests automatisés : intégrer des tests unitaires et d’intégration (JUnit, Mockito, Cypress).
+•	CI/CD : mettre en place des pipelines d’intégration continue (GitHub Actions, Jenkins).
+•	Sécurisation : ajouter Spring Security avec OAuth2 ou JWT pour protéger les endpoints.
+•	Gestion des profils : configurer différents profils (dev, prod) dans Config Server.
+•	Supervision : utiliser Spring Boot Actuator, Prometheus et Grafana pour monitorer les services.
+
+Extrait de configuration exemple (API Gateway) :
+spring:
+cloud:
+gateway:
+routes:
+- id: employee-service
+uri: lb://EMPLOYEE-SERVICE
+predicates:
+- Path=/employees/**
+filters:
+- StripPrefix=1
+
+
+Exemple simple d’un contrôleur REST (Employee Service) :
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+@Autowired
+private EmployeeService employeeService;
+
+@GetMapping
+public List<Employee> getAllEmployees() {
+return employeeService.findAll();
+}
+
+@PostMapping
+public Employee createEmployee(@RequestBody Employee employee) {
+return employeeService.save(employee);
+}
+
+// autres méthodes CRUD...
+}
+
+
+11	Autres détails : Quelques captures d’écran pour éclairer l’aspect pratique.
+11.1	Bref présentation de la partie visuelle :
+-	Tableau de bord :
+
+ 
+
+
+-	Employee-service :
+  
+
+
+
+-	Departement-service :
+ 
+-	Projet-service :
+ 
+-	Etc.
+-	Interface Eureka avec les services démarrés : 
+
+ 
+
+12	Conclusion :
+L’architecture microservices mise en œuvre dans ce projet démontre la puissance et la flexibilité d’une approche modulaire pour la gestion d’entreprise. En divisant l’application en services autonomes et en adoptant des technologies modernes comme Spring Boot, React, Eureka, et Spring Cloud, il est possible de construire une plateforme évolutive, robuste et facile à maintenir.
+La centralisation de la configuration, la découverte dynamique des services, et le routage intelligent via l’API Gateway contribuent à une grande résilience et à une meilleure gestion opérationnelle. De plus, le frontend React offre une expérience utilisateur fluide, adaptée aux attentes actuelles.
+Enfin, ce projet pose les bases solides pour de futures améliorations, telles que l’ajout de la sécurité avancée, la mise en place d’une chaîne CI/CD complète, et l’intégration d’outils de supervision, qui permettront d’optimiser encore davantage la qualité et la performance globale.
+
