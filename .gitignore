@@ -1,0 +1,4 @@
+# Ignore les dossiers de build Java
+target/
+# Ignore tous les fichiers .jar
+*.jar

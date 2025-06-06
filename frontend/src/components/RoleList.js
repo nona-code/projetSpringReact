@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SearchBar from './SearchBar';
 
 function RoleList() {
   const [roles, setRoles] = useState([]);
   const [name, setName] = useState('');
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => { loadRoles(); }, []);
   const loadRoles = () => {
@@ -35,15 +37,20 @@ function RoleList() {
   const handleEdit = role => { setEditId(role.id); setName(role.name); };
   const handleCancel = () => { setEditId(null); setName(''); };
 
+  const filteredRoles = roles.filter(role =>
+    role.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <h2>Liste des rôles</h2>
+      <SearchBar value={search} onChange={setSearch} placeholder="Rechercher un rôle..." />
       <table className="table table-striped">
         <thead>
           <tr><th>Nom</th><th>Actions</th></tr>
         </thead>
         <tbody>
-          {roles.map(r => (
+          {filteredRoles.map(r => (
             <tr key={r.id}>
               <td>{r.name}</td>
               <td>

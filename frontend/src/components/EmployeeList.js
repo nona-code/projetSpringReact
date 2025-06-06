@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SearchBar from './SearchBar';
 
 function EmployeeList() {
   const [employees, setEmployees] = useState([]);
   const [form, setForm] = useState({ name: '', email: '', departmentId: '', projectId: '' });
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     loadEmployees();
@@ -66,9 +68,14 @@ function EmployeeList() {
     setForm({ name: '', email: '', departmentId: '', projectId: '' });
   };
 
+  const filteredEmployees = employees.filter(emp =>
+    emp.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <h2>Liste des employés</h2>
+      <SearchBar value={search} onChange={setSearch} placeholder="Rechercher un employé..." />
       <table className="table table-striped">
         <thead>
           <tr>
@@ -80,7 +87,7 @@ function EmployeeList() {
           </tr>
         </thead>
         <tbody>
-          {employees.map(e => (
+          {filteredEmployees.map(e => (
             <tr key={e.id}>
               <td>{e.name}</td>
               <td>{e.email}</td>

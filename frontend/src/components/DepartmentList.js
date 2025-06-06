@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SearchBar from './SearchBar';
 
 function DepartmentList() {
   const [departments, setDepartments] = useState([]);
   const [name, setName] = useState('');
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState('');
 
   // Charger la liste au montage
   useEffect(() => {
@@ -62,9 +64,14 @@ function DepartmentList() {
     setName('');
   };
 
+  const filteredDepartments = departments.filter(dep =>
+    dep.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <h2>Liste des départements</h2>
+      <SearchBar value={search} onChange={setSearch} placeholder="Rechercher un département..." />
       <table className="table table-striped">
         <thead>
           <tr>
@@ -73,7 +80,7 @@ function DepartmentList() {
           </tr>
         </thead>
         <tbody>
-          {departments.map(d => (
+          {filteredDepartments.map(d => (
             <tr key={d.id}>
               <td>{d.name}</td>
               <td>

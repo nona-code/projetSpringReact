@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import EmployeeList from './components/EmployeeList';
 import DepartmentList from './components/DepartmentList';
@@ -6,6 +6,10 @@ import ProjectList from './components/ProjectList';
 import OfficeList from './components/OfficeList';
 import RoleList from './components/RoleList';
 import SkillList from './components/SkillList';
+import SearchBar from './components/SearchBar';
+import Register from './components/Register';
+import Login from './components/Login';
+import Profile from './components/Profile';
 import './App.css';
 
 function Dashboard() {
@@ -108,6 +112,9 @@ function Dashboard() {
 }
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [view, setView] = useState('login'); // 'login' | 'register' | 'profile'
+
   return (
     <Router>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -123,15 +130,24 @@ function App() {
           </div>
         </div>
       </nav>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/employees" element={<EmployeeList />} />
-        <Route path="/departments" element={<DepartmentList />} />
-        <Route path="/projects" element={<ProjectList />} />
-        <Route path="/offices" element={<OfficeList />} />
-        <Route path="/roles" element={<RoleList />} />
-        <Route path="/skills" element={<SkillList />} />
-      </Routes>
+      <div>
+        {/* <SearchBar value={globalSearch} onChange={setGlobalSearch} placeholder="Recherche globale..." /> */}
+        {view === 'login' && <Login onLogin={u => { setUser(u); setView('profile'); }} />}
+        {view === 'register' && <Register onRegister={u => { setUser(u); setView('profile'); }} />}
+        {view === 'profile' && <Profile user={user} />}
+        <button onClick={() => setView('login')}>Connexion</button>
+        <button onClick={() => setView('register')}>Inscription</button>
+        {user && <button onClick={() => { setUser(null); setView('login'); }}>Déconnexion</button>}
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/employees" element={<EmployeeList />} />
+          <Route path="/departments" element={<DepartmentList />} />
+          <Route path="/projects" element={<ProjectList />} />
+          <Route path="/offices" element={<OfficeList />} />
+          <Route path="/roles" element={<RoleList />} />
+          <Route path="/skills" element={<SkillList />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

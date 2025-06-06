@@ -16,6 +16,9 @@ public class Employee {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "department_id")
     private Long departmentId;
 
@@ -27,17 +30,19 @@ public class Employee {
         // Constructeur sans argument requis par JPA
     }
 
-    public Employee(String name, String email, Long departmentId, Long projectId) {
+    public Employee(String name, String email, String password, Long departmentId, Long projectId) {
         super();
         this.name = name;
         this.email = email;
+        this.password = password;
         this.departmentId = departmentId;
         this.projectId = projectId;
-    } public Employee(Long id, String name, String email, Long departmentId, Long projectId) {
+    } public Employee(Long id, String name, String email, String password, Long departmentId, Long projectId) {
         super();
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
         this.departmentId = departmentId;
         this.projectId = projectId;
     }
@@ -64,6 +69,14 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getDepartmentId() {

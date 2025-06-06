@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SearchBar from './SearchBar';
 
 function OfficeList() {
   const [offices, setOffices] = useState([]);
   const [location, setLocation] = useState('');
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => { loadOffices(); }, []);
   const loadOffices = () => {
@@ -35,15 +37,20 @@ function OfficeList() {
   const handleEdit = office => { setEditId(office.id); setLocation(office.location); };
   const handleCancel = () => { setEditId(null); setLocation(''); };
 
+  const filteredOffices = offices.filter(office =>
+    office.location.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <h2>Liste des bureaux</h2>
+      <SearchBar value={search} onChange={setSearch} placeholder="Rechercher un bureau..." />
       <table className="table table-striped">
         <thead>
           <tr><th>Emplacement</th><th>Actions</th></tr>
         </thead>
         <tbody>
-          {offices.map(o => (
+          {filteredOffices.map(o => (
             <tr key={o.id}>
               <td>{o.location}</td>
               <td>

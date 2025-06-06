@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SearchBar from './SearchBar';
 
 function ProjectList() {
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState({ name: '', description: '' });
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     loadProjects();
@@ -57,6 +59,10 @@ function ProjectList() {
     setForm({ name: '', description: '' });
   };
 
+  const filteredProjects = projects.filter(project =>
+    project.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <div className="card">
@@ -64,6 +70,7 @@ function ProjectList() {
           <h2 className="mb-0">Liste des projets</h2>
         </div>
         <div className="card-body">
+          <SearchBar value={search} onChange={setSearch} placeholder="Rechercher un projet..." />
           <table className="table table-striped table-hover">
             <thead className="table-light">
               <tr>
@@ -73,7 +80,7 @@ function ProjectList() {
               </tr>
             </thead>
             <tbody>
-              {projects.map(p => (
+              {filteredProjects.map(p => (
                 <tr key={p.id}>
                   <td>{p.name}</td>
                   <td>{p.description}</td>

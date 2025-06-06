@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SearchBar from './SearchBar';
 
 function SkillList() {
   const [skills, setSkills] = useState([]);
   const [name, setName] = useState('');
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => { loadSkills(); }, []);
   const loadSkills = () => {
@@ -35,15 +37,20 @@ function SkillList() {
   const handleEdit = skill => { setEditId(skill.id); setName(skill.name); };
   const handleCancel = () => { setEditId(null); setName(''); };
 
+  const filteredSkills = skills.filter(skill =>
+    skill.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <h2>Liste des compétences</h2>
+      <SearchBar value={search} onChange={setSearch} placeholder="Rechercher une compétence..." />
       <table className="table table-striped">
         <thead>
           <tr><th>Nom</th><th>Actions</th></tr>
         </thead>
         <tbody>
-          {skills.map(s => (
+          {filteredSkills.map(s => (
             <tr key={s.id}>
               <td>{s.name}</td>
               <td>
